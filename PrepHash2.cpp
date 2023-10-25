@@ -1,5 +1,6 @@
 #include <iostream>
 #include <exception>
+#include <cmath>
 
 using namespace std;
 
@@ -51,6 +52,7 @@ public:
     void remover(const string &chave);
     // Retorna o valor associado a uma chave
     int consultar(const string &chave);
+    void Redimensiona();
 };
 
 hashEA::hashEA(unsigned cap)
@@ -65,6 +67,27 @@ hashEA::hashEA(unsigned cap)
 hashEA::~hashEA()
 {
     delete[] vetDados;
+}
+
+void hashEA::Redimensiona(){
+    unsigned Newcapacity = capacidade + (capacidade*0.5);
+    cout << Newcapacity << endl;
+
+    dado *vetAux = new dado[Newcapacity];
+    int cont = 0;
+
+    for(unsigned i=0;i<capacidade;i++){
+        if(vetDados[i]!=INVALIDO){
+            vetAux[cont] = vetDados[i];
+            cont++;
+        }
+    }
+
+    capacidade = Newcapacity;
+
+    //delete vetDados;
+
+    vetDados = vetAux;
 }
 
 unsigned hashEA::posicao(const string &chave)
@@ -119,6 +142,14 @@ void hashEA::inserir(const string &assunto, const string &interessado, const cha
     vetDados[pos].tipo = tipo;
     vetDados[pos].numeroProcesso = valor;
     tamanho++;
+
+    unsigned aux = ceil((capacidade*0.6));
+    
+
+    if(tamanho >= ceil(aux)){
+        Redimensiona();
+    }
+    
 }
 
 void hashEA::imprimir()
@@ -163,7 +194,7 @@ int hashEA::consultar(const std::string &chave)
 
 int main()
 {
-    hashEA tabela(6);
+    hashEA tabela(3);
     char operacao;
 
     string assunto, interessado;
